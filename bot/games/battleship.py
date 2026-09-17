@@ -216,7 +216,8 @@ else:
 return self.player1_board if player == self.player1 else self.player2_board
 
 def place_move(self, player: discord.User, coords: Coords) -> tuple[bool, bool]:
- board = self.get_board(player, other=True)
+ board = self.get_board(player)
+ op_board = self.get_board(player, other=True)
 
 for i, ship in enumerate(op_board.ships):
 for j, coord in enumerate(ship.span):
@@ -229,3 +230,190 @@ return all(op_board.ships[i].hits), True
 board.my_misses.append(coords)
 op_board.op_misses.append(coords)
 return False, False
+
+async def get_file(
+self, player: discord.User, *, hide: bool = False
+) -> tuple[discord.Embed, discord.File, discord.Embed, discord.File]:
+
+board = self.get_board(player)
+image1 = await board.to_image()
+
+board2 = self.get_board(player, other=True)
+image2 = await board2.to_image(hide=hide)
+
+file1 = discord.File(image1, "board1.png")
+file2 = discord.File(image2, "board2.png")
+
+embed1 = discord.Embed(color=self.embed_color)
+embed2 = discord.Embed(color=self.embed_color)
+
+embed1.set_image(url="attachment://board1.png")
+embed2.set_image(url="attachment://board2.png")
+
+return embed1, file1, embed2, file2
+
+def to_num(self, alpha: str) -> int:
+return ord(alpha) % 96
+
+def get_coords(self, inp: str) -> tuple[str, Coords]:
+inp = re.sub(r"\s+", "", inp).lower()
+match = self.inputpat.match(inp)
+x, y = match.group(1), match.group(2)
+return (inp, (self.to_num(x), int(y)))
+
+def who_won(self) -> Optional[discord.User]:
+    if self.player1_board.won():
+        return self.player2
+    elif self.player2_board.won():
+    return self.player1
+    else:
+    return None
+
+async def get_ship_inputs(
+self, ctx: commands.Context[commands.Bot], user: discord.User
+) -> bool:
+
+boards = self.get_board(user)
+
+async def place_ship(ship: str, size: int, color: tuple[int, int, int]) -> bool:
+embed, file, _, _ = await self.get_file(user)
+await user.send(
+f"Where do you want to place your `{ship}`?\nSend the start coordinate... e.g. (`a1`)",
+embed=embed,
+file=file,
+)
+
+def check(msg: discord.Message) -> bool:
+if not msg.guild and msg.author == user:
+content = re.sub(r"\s+", "", message.content).lower()
+return bool(self.inputpat.match(content))
+
+try:
+message: discord.Message = await ctx.bot.wait_for(
+"message", check=check, timeout=self.timeout
+)
+except asyncio.TimeoutError:
+await user.send(
+   f"The timeout of {self.timeout} seconds, has been reached. Aborting..."
+)
+return False
+
+_, start = self.get_coords(message.content)
+
+await user.send("Do you want it to be vertical?\nSay `yes` or `no`")
+
+def check(msg: discord.Message) -> bool:
+if not msg.guild and msg.author == user:
+content = msg.content.replace(" ", "").lower()
+return content in ("yes", "no")
+
+try:
+message: discord.Message = await ctx.bot.wait_for(
+"message", check=check, timeout=self.timeout
+)
+except asyncio.TimeoutError:
+await user.send(
+f"The timeout of {self.timeout} seconds, has been reached. Aborting..."
+)
+return False
+
+vertical = message.content.replace(" ", "").lower() != "yes"
+
+new_ship = Ship(
+name=ship,
+size=size,
+start=start,
+vertical=vertical,
+color=color,
+)
+
+if board._is_valid(new_ship):
+board.ships.append(new_ship)
+else:
+await  user.send("That is a not a valid location, please try again")
+await place_ship(ship, size, color)
+
+for ship, (size, color) in SHIPS.items():
+await place_ship(ship, size, color)
+
+await user.send("All setup! (Game will soon start after the opponent finishes)")
+return True
+
+async def start(
+self, ctx:  commands.Context[commands.Bot], *, timeout: Optional[float] = None
+) -> tuple[discord.Message, discord.Message]:
+
+await ctx.send("**Game Started!**\nI've setup the boards in your dms!")
+
+if not self.random:
+await asyncio.gather(
+self.get_ship_inputs(ctx, self.player1),
+self.get_ship_inputs(ctx, self.player2),
+)
+
+_, f1, _, f2 = await self.get_file(self.player1)
+_, f3, _, f4 = await self.get_file(self.player2)
+
+self.message1 = await self.player1.send("**Game starting!**", files=[f2, f1])
+self.message2 = await self.player2.send("**Game starting!**", files=[f4, f3])
+self.timeout = timeout
+
+while not ctx.bot.is_closed():
+
+def check(msg: discord.Message) -> bool:
+if not msg.guild and msg.author == self.turn:
+content = msg.content.replace(" ", "").lower()
+return bool(self.inputpat.match(content))
+
+try:
+    message: discord.Message = await ctx.bot.wait_for(
+    "message", check=check, timeout=self.timeout
+    )
+except asyncio.TimeoutError:
+await ctx.send(
+f"The timeout of {timeout} seconds, has been reached. Aborting..."
+)
+break
+
+raw, coords = self.get_coords(message.content)
+
+if coords in self.get_board(self.turn):
+await self.turn.send("You've attacked this coordinate before!")
+
+else:
+    sunk, hit = self.place_move(self.turn, coords)
+    next_turn = discord.User = (
+    self.player2 if self.turn == self.player1 else self.player1
+    )
+
+if hit and sunk:
+await self.turn.send(
+f"`{raw}` was a hit!, you also sank one of their ships! :)"
+)
+await next_turn.send(
+f"They went for `{raw}`, and it was a hit!\nOne of your ships also got sunk! :("
+)
+elif hit:
+    await self.turn.send(f"`{raw}` was a hit!")
+    await next_turn.send(f"They went for `{raw}`, and it was a hit! :(")
+else:
+    await self.turn.send(f"`{raw}` was a miss :(")
+    await next_turn.send(
+f"They went for `{raw}`, and it was a miss! :)"
+    )
+
+_, f1, _, f2 = await self.get_file(self.player1)
+_, f3, _, f4 = await self.get_file(self.player2)
+
+await self.player1.send(files=[f2, f1])
+await self.player2.send(files=[f4, f3])
+self.turn = next_turn
+
+if winner := self.who_won():
+ await winner.send("Congrats, you won! :)")
+
+other = self.player2 if winner == self.player1 else self.player1
+await other.send("You lost, better luck next time :(")
+break
+
+return self.message1, self.message2
