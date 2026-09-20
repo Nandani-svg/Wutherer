@@ -2,45 +2,44 @@
 
 # WUTHERER
 
-Next Generation Discord Server Intelligence, Automation and Management Platform
+A Discord Server Intelligence, Automation and Management Platform
 
 # Overview
 
-Wutherer is an all in one Discord bot and server management platform designed to provide powerful moderation, automation, security, AI, analytics, gaming, support and community management tools in one place.
-
-The platform combines a Discord bot with a web dashboard, allowing server owners and administrators to manage their communities directly from Discord while also having a centralized interface for configuring and monitoring different systems.
-
-Wutherer is designed to reduce the need for multiple discord bots by bringing essential server-management features together into one platform.
+Wutherer is a enchanched server intelligence, automation, and management platform. It combines a powerful Discord bot with a web dashboard to help server owners manage Moderation, security, analytics, AI tools, community features and games in one place.
 
 ---
 
- ## Main Features
+## Main Features
 
-Wutherer provides a complete moderation and server protection system including Ban, Tempban, Kick, Softban, Timeout, Warn, Purge, Lock, Nuke and Moderation logging.
+Wutherer brings together everything a server needs in one place. It helps with moderation, security, automated rules, AI-powered assistance, analytics, community engagement, support tools, and game features. The platform is built to make server management easier, faster and more organized for admins and owners and stuffs 
 
-Automoderation
-AI
-Gaming and Minecraft
-Youtube
-Tickets and Support
-Leveling and Community
-Analytics
-Dashboard
-Commands - Wutherer command system is divided into different modules covering areas such as Moderation, Automod, Security, AI, Minecraft, Youtube, Tickets, Leveling, Giveaways, Polls, Suggestion, Utilities, and Server Management.
+- Moderation tools such as bans, warnings, timeouts, purges, locks, and logs
+- Smart automod to detect and handle spam, harmful content, and rule violations
+- Strong server security features to protect communities from misuse and attacks
+- AI-powered tools for smarter support and server management
+- Community features such as leveling, tickets, polls, giveaways, and suggestions
+- Analytics dashboards to monitor activity, engagement, and server performance
+- Gaming features including multiplayer Discord games like Battleship and Chess
+- A clean web dashboard for managing the bot and server settings from one place
+- Support systems for tickets, help flow, and better user communication
+- Flexible server management tools for both small and large communities
 
 ---
 
 ## Work Done by Aadyant Bharti
 
-Dashboard - The Wutherer provided a centralized web interface for configuring and managing the platform.
+Aadyant worked on the dashboard and web management side of Wutherer. He have built the main layout, styling and core pages for the platform, and also contributed to the AI and analytics sections along with the initial guild dashboard structure.
 
-The Current Dashboard development includes the Main dashboard page, Main application layout, Global styling, AI Dashboard, Analytics dashboard and initial guild dashboard structure.
+---
 
-The main dashboard files currently completed include "globals.css", "layout.tsx" and "page.tsx".
+## Work Done by Vivid
 
-Additional development has been done inside "/dashboard/guild/ai" and "/dashboard/guild/analytics".
+Vivid worked on the bot and game development side of Wutherer. He created multiplayer Discord games, including Battleship and Chess and built the foundation for future button based games inside the bot system.
 
+---
 
-## Work done by Vivid
+## Contribution Summary
 
-till now i have made game module for multiplayer right inside discord.full Battleship game which can be played over DM with image boards,a Chess game where player move and watch the board which update in real time and added foundation for button based games which i am going to make later on.
+- Vivid: Discord bot, automation and game development
+- Aadyant: Dashboard UI, analytics, AI features and web management
