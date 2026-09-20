@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ArrowRight, BarChart3, ShieldCheck, Terminal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/dashboard/navbar";
-import { ProductPreview } from "@/components/landing/product-preview";
 
 export default function LandingPage() {
     return (
@@ -17,12 +16,11 @@ export default function LandingPage() {
                             <h1 className="mt-4 text-4xl font-semibold tracking-[-0.035em] text-white sm:text-5xl">Run a calmer, more capable community</h1>
                             <p className="mt-5 max-w-lg text-base leading-relaxed text-slate-400">Wutherer brings the bot controls your team uses together: safety, member workflows, automations and integrations-without burying the useful settings</p>
                             <div className="mt-8 flex flex-wrap items-center gap-3">
-                                <Link href="/dashbord"><Button size="lg" className="gap-2">Open workspace <ArrowRight className="h-3.5 w-3.5" /></Button></Link>
+                                <Link href="/dashboard"><Button size="lg" className="gap-2">Open workspace <ArrowRight className="h-3.5 w-3.5" /></Button></Link>
                                 <a href="capabilities"><Button size="lg" variant="secondary">Explore controls</Button></a>
                             </div>
                             <p className="mt-5 text-xs text-slate-500">Configure only the modules your server actually uses.</p>
                         </div>
-                        <ProductPreview />
                     </div>
                 </section>
 
