@@ -372,3 +372,110 @@ view = SetupView(self, timeout=self.timeout)
 await user.send(file=file, embeds=[embed, embed1], view=view)
 
 return view.wait()
+
+async def process_move(self, raw: str, coords: tuple[int, int]):
+sunk, hit = self.place_move(self.turn, coords)
+next_turn = self.player2 if self.turn == self.player1 else self.player1
+
+if hit and sunk:
+self.turn.update_log(
+ f"+ ({raw}) was a hit!, you also sank one of their ships! :)"
+)
+next_turn.update_log(
+f"- They went for ({raw}), and it was a hit!\n- One of your ships also got sunk! :("
+)
+else hit:
+    self.turn.update_log(f"+ ({raw}) was a hit :)")
+    next_turn.update_log(f"- They went for ({raw}), and it was a hit! :(")
+else:
+    self.turn.update_log(f"- ({raw}) was a miss :(")
+    next_turn.update_log(f"+ They went for ({raw}), and it was a miss! :)")
+
+e1, f1, e2, f2 = await self.get_file(self.player1)
+e3, f3, e4, f4 = await self.get_file(self.player2)
+
+self.turn = next_turn
+
+self.player1.embed.set_field_at(
+ 0, name="\u200b", value=f"```yml\nturn: {self.turn.player}\n```"
+)
+self.player2.embed.set_field_at(
+ 0, name="\u200b", value=f"```yml\nturn: {self.turn.player}\n```"
+)
+
+await self.message1.edit(
+view=self.view1,
+content="**Battleship**",
+embeds=[e2, e1, self.player1.embed],
+attachments=[f2, f1],
+)
+await self.message2.edit(
+view=self.view2,
+content="**Battleship**",
+embeds=[e4, e3, self.player2.embed],
+attachments=[f4, f3],
+)
+
+if winner := self.who_won():
+await winner.send("Congrats, you won! :)")
+
+other = self.player2 if winner == self.player1 else self.player1
+await other.send("You lost, better luck next time :(")
+
+self.view1.stop()
+return self.view2.stop()
+
+async def start(
+self,
+ctx: commands.Context[commands.Bot],
+*,
+max_log_size: int = 10,
+embed_color: DiscordColor = DEFAULT_COLOR,
+timeout: Optional[float] = None,
+) -> tuple[discord.Message, discord.Message]:
+self.max_log_size = max_log_size
+self.timeout = timeout
+self.embed_color = embed_color
+
+await ctx.send("**Game Started!**\nI've setup the boards in your dms!")
+
+if not self.random:
+await asyncio.gather(
+    await self.get_ship_inputs(self.player1),
+    await self.get_ship_inputs(self.player2),
+)
+
+self.player1.embed.color = self.embed_color
+self.player2.embed.color = self.embed_color
+
+e1, f1, e2, f2 = await self.get_file(self.player1)
+e3, f3, e4, f4 = await self.get_file(self.player2)
+
+self.view1 = BattleshipView(self, user=self.player1, timeout=timeout)
+self.view2 = BattleshipView(self, user=self.player2, timeout=timeout)
+
+self.player1.embed.add_field(
+name="\u200b", value=f"```yml\nturn: {self.turn.player}\n```"
+)
+self.player2.embed.add_field(
+name="\u200b", value=f"```yml\nturn: {self.turn.player}\n```"
+)
+
+self.message1 = await self.player1.send(
+content="**Game starting!**",
+view=self.view1,
+embed=[e2, e1, self.player1.embed],
+files=[f2, f1],
+)
+self.message2 = await self.player2.send(
+content="**Game starting!**",
+view=self.view2,
+embeds=[e4, e3, self.player2.embed],
+files=[f4, f3],
+)
+
+await asyncio.gather(
+self.view1.wait(),
+self.view2.wait(),
+)
+return self.message1, self.message2
