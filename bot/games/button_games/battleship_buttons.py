@@ -214,3 +214,161 @@ self.add_item(BattleshipButton(cancel_button=True))
 
 if start and self.player == self.game.player2:
 self.disable()
+
+
+class SetupInput(discord.ui.Modal):
+def __init__(self, button: SetupButton) -> None:
+self.button = button
+self.ship = self.button.label
+
+super().__init__(title=f"{self.ship} Setup")
+
+self.start_coord = discord.ui.TextInput(
+label=f"Enter the starting coordinate",
+placeholder="ex: a8",
+style=discord.TextStyle.short,
+required=True,
+min_length=2,
+max_length=3,
+)
+
+self.is_vertical = discord.ui.TextInput(
+label=f"Do you want it to be vertical? (y/n)",
+placeholder='"y" or "n"',
+style=discord.TextStyle.short,
+required=True,
+min_length=1,
+max_length=1,
+)
+
+self.add_item(self.start_coord)
+self.add_item(self.is_vertical)
+
+async def on_submit(self, interaction: discord.Interaction) -> None:
+game = self.button.view.game
+
+start = self.start_coord.value.strip().lower()
+vertical = self.is_vertical.value.strip().lower()
+
+board = game.get_board(interaction.user)
+
+if not game.inputpat.match(start):
+return await interaction.response.send_message(
+f"{start} is not a valid coordinate!", ephemeral=True
+)
+
+if vertical not in ("y","n"):
+return await interaction.response.send_message(
+f"Response for `vertical` must be either `y` or `n`", ephemeral=True
+)
+
+vertical = vertical != "y"
+
+_, start = game.get_coords(start)
+
+new_ship = Ship(
+name=self.ship,
+size=self.button.ship_size,
+start=start,
+vertical=vertical,
+color=self.button.ship_color,
+)
+
+if board._is_valid(new_ship):
+self.button.disabled = True
+board.ships.append(new_ship)
+
+embed, file, _, _ = await game.get_file(interaction.user, hide=False)
+
+await interaction.response.edit_message(
+attachments=[file], embed=embed, view=self.button.view
+)
+
+if all(
+button.disabled
+for button in self.button.view.children
+if isinstance(button, discord.ui.Button)
+):
+await interaction.user.send(
+ "**All setup!** (Game will soon start after the opponent finishes)"
+)
+return self.button.view.stop()
+else:
+    return await interaction.response.send_message(
+    "Ship placement was detected to be invalid, please try again.",
+    ephemeral=True,
+    )
+
+
+class SetupButton(discord.ui.Button["SetupView"]):
+def __init__(
+self, label: str, ship_size: int, ship_color: tuple[int, int, int]
+) -> None:
+super().__init__(
+label=label,
+style=discord.ButtonStyle.green,
+)
+
+self.ship_size = ship_size
+self.ship_color = ship_color
+
+async def callback(self, interaction: discord.Interaction) -> None:
+await interaction.response.send_modal(SetupInput(self))
+
+
+class SetupView(BaseView):
+def __init__(self, game: BetaBattleShip, timeout: float) -> None:
+super().__init__(timeout=timeout)
+
+self.game = game
+
+for ship, (size, color) in SHIPS.items():
+self.add_item(SetupButton(ship, size, color))
+
+
+class BetaBattleShip(BattleShip)
+
+embed: discord.Embed
+
+def __init__(
+self,
+player1: discord.User,
+player2: discord.User,
+*,
+random: bool = True
+) -> None:
+
+super().__init__(player1, player2, random=random)
+
+self.player1: Player = Player(player1, game=self)
+self.player2: Player = Player(player2, game=self)
+
+self.turn: Player = self.player1
+
+def get_board(self, player: discord.User, other: bool = False) -> Board:
+player = getattr(player, "player", player)
+if other:
+    return (
+        self.player2_board
+        if player == self.player1.player
+        else self.player1_board
+    )
+else:
+    return(
+        self.player1_board
+        if player == self.player1.player
+        else self.player2_board
+    )
+
+async def get_ship_inputs(self, user: Player) -> Coroutine[Any, Any, bool]:
+embed, file, _, _ = await self.get_file(user)
+
+embed1 = discord.Embed(
+description="**Press the buttons to place your ships!**"
+color=self.embed_color,
+)
+
+view = SetupView(self, timeout=self.timeout)
+await user.send(file=file, embeds=[embed, embed1], view=view)
+
+return view.wait()
