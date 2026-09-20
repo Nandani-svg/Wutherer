@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --bg: #0D0E11;
+    --surface: #161920;
+    --surface-hover: #20242d;
+    --raised: #161920;
+    --border: #2b303a;
+    --border-light: #3b424e;
+    --text: #F3F4F6;
+    --text-secondary: #9CA3AF;
+    --text-muted: #6b7280;
+    --primary: #C5FF45;
+    --primary-hover: #b1eb2f;
+    --primary-light: #dcff8c;
+    --primary-subtle: rgba(197, 255, 69, 0.16);
+    --danger: #FF6B00;
+    --danger-hover: #e85f00;
+    --success: #C5FF45;
+    --warning: #FF6B00;
+}
+
+body {
+    color: var(--text);
+    background: var(--bg);
+    background-image: linear-gradient(180deg, rgba(255, 107, 0, 0.04), transparent 18rem);
+    font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #3b424e;
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+}
+
+::selection {
+    background: rgba(197, 255, 69, 0.36);
+    color: #F3F4F6;
+}
+
+*:focus-visible {
+    outline: 2px solid #C5FF45;
+    outline-offset: 2px;
+}
+
+button, a, input, select, textarea {
+    -webkit-tap-highlight-color: transparent;
+}
+
+.panel {
+    border: 1px solid var(--border);
+    background: var(--raised);
+    border-radius: 10px;
+}
+
+.page-grid {
+    display: grid;
+    gap: 1.25rem;
+}

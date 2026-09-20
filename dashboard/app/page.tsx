@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ArrowRight, BarChart3, ShieldCheck, Terminal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/dashboard/navbar";
-import { Product Preview } from "@/components/landing/product-preview";
 
 export default function LandingPage() {
     return (
@@ -14,15 +13,14 @@ export default function LandingPage() {
                     <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[minmax(0,0.9fr)_minmax(28rem,1.1fr)] lg:items-center lg:py-20">
                         <div className="max-w-xl">
                             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary-light">Discord Server Control</p>
-                            <h1 classname="mt-4 text-4xl font-semibold tracking-[-0.035em] text-white sm:text-5xl">Run a calmer, more capable community</h1>
+                            <h1 className="mt-4 text-4xl font-semibold tracking-[-0.035em] text-white sm:text-5xl">Run a calmer, more capable community</h1>
                             <p className="mt-5 max-w-lg text-base leading-relaxed text-slate-400">Wutherer brings the bot controls your team uses together: safety, member workflows, automations and integrations-without burying the useful settings</p>
                             <div className="mt-8 flex flex-wrap items-center gap-3">
-                                <Link href="/dashbord"><Button size="lg" className="gap-2">Open workspace <ArrowRight className="h-3.5 w-3.5" /></Button></Link>
+                                <Link href="/dashboard"><Button size="lg" className="gap-2">Open workspace <ArrowRight className="h-3.5 w-3.5" /></Button></Link>
                                 <a href="capabilities"><Button size="lg" variant="secondary">Explore controls</Button></a>
                             </div>
                             <p className="mt-5 text-xs text-slate-500">Configure only the modules your server actually uses.</p>
                         </div>
-                        <ProductPreview />
                     </div>
                 </section>
 
@@ -50,8 +48,8 @@ export default function LandingPage() {
             </main>
 
             <footer className="border-t border-card-border py-6 bg-surface text-center text-xs text-slate-500">
-                <p> Wutherer</p>
+                <p> Wutherer &copy; {new Date().getFullYear()} - All rights reserved</p>
             </footer>
         </div>
-    )
+    );
 }
