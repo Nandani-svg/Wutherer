@@ -26,6 +26,11 @@ Wutherer brings together everything a server needs in one place. It helps with m
 - Flexible server management tools for both small and large communities
 
 ---
+## The reason there is no playable link
+
+Work is still in development and nothing can be run right now. We will provide playable link by 2-3week
+
+---
 
 ## Work Done by Aadyant Bharti
 
