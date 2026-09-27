@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Wutherer logo">
+  <defs>
+    <linearGradient id="logo-gradient" x1="18" y1="34" x2="108" y2="96" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a6ef28" />
+      <stop offset="1" stop-color="#21c9e5" />
+    </linearGradient>
+  </defs>
+  <path fill="none" stroke="url(#logo-gradient)" stroke-width="11" d="M20 36c25-2 40-9 56-18l15 9M20 36v18c0 31 17 51 44 63 28-12 44-32 44-63V48" />
+  <path fill="none" stroke="url(#logo-gradient)" stroke-linecap="round" stroke-width="11" d="M26 80c9-17 26-22 46-31 17-8 27-15 36-27M39 93c9-14 21-19 39-24 13-4 22-9 30-18" />
+</svg>

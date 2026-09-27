@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, ShieldCheck } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function Navbar() {
@@ -9,9 +9,7 @@ export function Navbar() {
         <header className="sticky top-0 z-50 w-full border-b border-card-border bg-background/95 backdrop-blur">
             <div className="mx-auto flex h-16 max-w-7xl items-centr justify-between px-4 sm:px-6">
                 <Link href="/" className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from primary to-sky-400 text-slate-950 shadow-sm shadow-primary/20">
-                <ShieldCheck className="h-4.5 w-4.5" />
-                </div>
+                <img src="/logo.svg" alt="" className="h-8 w-8" />
                 <span className="text-sm font-semibold tracking-tight text-white">Wutherer</span>
                 </Link>
 
